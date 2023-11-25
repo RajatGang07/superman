@@ -1,0 +1,8 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/b44762b6-7759-4467-b8b0-1c21286a6226/resourceGroups/BeigeBananasProd/providers/Microsoft.Web/sites/foresee",
+    "appService.deploySubpath": ".",
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ]
+}
