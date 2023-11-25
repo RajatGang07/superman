@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "nodemon app.js"
   },
   "dependencies": {
+    "@azure/identity": "^4.0.0",
+    "@azure/keyvault-secrets": "^4.7.0",
     "axios": "^1.6.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
@@ -23,7 +25,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "nodemon": "^1.14.9"
+    "nodemon": "^3.0.1"
   },
   "repository": {
     "type": "git",
