@@ -1,7 +1,14 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+var createError = require("http-errors");
+var express = require("express");
+var mongoose = require("mongoose");
+var path = require("path");
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
+const { format } = require("date-fns");
 
+// 1st party dependencies
+var configData = require("./config/connection");
+var indexRouter = require("./routes/openRoutes");
 const config = require('./config');
 const defaultMiddleware = require('./middleware/default');
 const authentication = require('./middleware/authenticate');
@@ -10,44 +17,80 @@ const openRoutes = require('./routes/openRoutes');
 const HttpError = require('./models/httpError');
 const faceBookAppAuthenticationRoutes = require('./routes/faceBookAppAuthenticationRoutes')
 
-const app = express();
-app.use(bodyParser.json());
 
-app.use(defaultMiddleware);
-// NoAuth Required, i.e. login, redirect, sign up
-app.use('/', openRoutes);
+async function getApp() {
 
-// Auth from this point forward
-// app.use(authentication)
-app.use('/api/v1/users', usersRoutes);
-app.use('/api/v1/facebook/auth', faceBookAppAuthenticationRoutes)
-// app.use('/api/v1/add/categories', categoryRoutes);
+  // Database
+  var connectionInfo = await configData.getConnectionInfo();
+  mongoose.connect(connectionInfo.DATABASE_URL);
 
-// No such path, 404
-app.all('*', (req, res, next) => {
-    throw new HttpError(`Can't find ${req.originalUrl} on this server!`, 404)
-});
+  var app = express();
 
+  var port = normalizePort(process.env.PORT || '3000');
+  app.set('port', port);
 
-app.use(function (err, req, res, next) {
+  // view engine setup
 
-    let httpCode = 500;
-    let json = {
-        status: "fail",
-        message: "Something broke!",
-        details: {}
-    }
+  app.use(logger("dev"));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+  app.use(cookieParser());
+  app.use(express.static(path.join(__dirname, "public")));
 
-    if (err instanceof HttpError) {
-        httpCode = err.code;
-        json.message = err.message;
-        json.details = err.details;
-    } else {
-        console.log("Unhandled Error ", err);
-    }
-    res.status(httpCode).json(json)
-})
+  app.locals.format = format;
 
-mongoose.connect(`mongodb+srv://${config.mongo.user}:${config.mongo.password}@${config.mongo.host}/littlelittle?retryWrites=true&w=majority`).then(() => {
-    app.listen(config.appPort);
-}).catch(err => console.log(err));
+  app.use(defaultMiddleware);
+  // NoAuth Required, i.e. login, redirect, sign up
+  app.use('/', openRoutes);
+  
+  // Auth from this point forward
+  // app.use(authentication)
+  app.use('/api/v1/users', usersRoutes);
+  app.use('/api/v1/facebook/auth', faceBookAppAuthenticationRoutes)
+  // app.use('/api/v1/add/categories', categoryRoutes);
+  app.use("/js", express.static(__dirname + "/node_modules/bootstrap/dist/js")); // redirect bootstrap JS
+  app.use(
+    "/css",
+    express.static(__dirname + "/node_modules/bootstrap/dist/css")
+  ); // redirect CSS bootstrap
+
+  // catch 404 and forward to error handler
+  app.use(function (req, res, next) {
+    next(createError(404));
+  });
+
+  // error handler
+  app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get("env") === "development" ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render("error");
+  });
+
+  return app;
+}
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+ function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+module.exports = {
+  getApp
+};
