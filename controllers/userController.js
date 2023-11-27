@@ -95,12 +95,12 @@ const login = async (req, res, next) => {
   }
 
   let isValidPassword = true;
-  // try {
-  //     isValidPassword = await bcrypt.compare(password, existingUser.password);
-  // } catch (err) {
-  //     const error = new HttpError('Check your credentials and try again', 403);
-  //     return next(error);
-  // }
+  try {
+      isValidPassword = await bcrypt.compare(password, existingUser.password);
+  } catch (err) {
+      const error = new HttpError('Check your credentials and try again', 403);
+      return next(error);
+  }
 
   if (!isValidPassword) {
     const error = new HttpError("Check your credentials and try again", 403);

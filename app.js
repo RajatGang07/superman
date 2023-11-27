@@ -4,6 +4,7 @@ var mongoose = require("mongoose");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const cors = require('cors');
 const { format } = require("date-fns");
 
 // 1st party dependencies
@@ -30,7 +31,7 @@ async function getApp() {
   app.set('port', port);
 
   // view engine setup
-
+  app.use(cors());
   app.use(logger("dev"));
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
@@ -60,15 +61,16 @@ async function getApp() {
   });
 
   // error handler
-  app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
+  // app.use(function (err, req, res, next) {
+  //   // set locals, only providing error in development
+  //   res.locals.message = err.message;
+  //   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render("error");
-  });
+  //   console.log('I am here')
+  //   // render the error page
+  //   // res.status(err.status || 500);
+  //   // res.render("error");
+  // });
 
   return app;
 }
