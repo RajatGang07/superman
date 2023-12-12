@@ -14,4 +14,4 @@ const facebookScheema = new Schema({
 
 facebookScheema.plugin(uniqueValidator);
 
-module.exports = mongoose.model("facebook-service", facebookScheema);
+module.exports = mongoose.model("facebook-services", facebookScheema);

@@ -23,22 +23,18 @@ const INSIGHT_FIELDS = [
   "adset_id",
   "ad_id",
   "ad_name",
-  "buying_type",
   "campaign_id",
-  "account_currency",
-  "objective",
-  "account_name",
-  "adset_name",
   "account_id",
   "created_time",
   "conversions",
   "unique_clicks",
   "outbound_clicks",
-  "unique_inline_link_clicks",
-  "unique_outbound_clicks",
 ];
 
-const ADSET_FIELDS = ["effective_status", "date_start", "date_stop", "dma"];
+
+const ADSET_FIELDS = ["effective_status"];
+
+const ADSET_INSIGHT = [ "date_start", "date_stop", "dma"];
 
 const CAMPAIGN_FIELDS = [
   "daily_budget",
@@ -57,10 +53,9 @@ const ACCOUNT_LEVEL = [
   "amount_spent",
 ];
 
-const AD_CREATIVES = ["creative_name", "object_type", "link_url"];
+const AD_CREATIVES = ["name", "object_type", "link_url"];
 
 const ADSET_LEVEL = [
-  "instagram_permalink_url",
   "bid_amount",
   "bid_strategy",
   "lifetime_budget",
@@ -73,3 +68,4 @@ exports.CAMPAIGN_FIELDS = CAMPAIGN_FIELDS;
 exports.ACCOUNT_LEVEL = ACCOUNT_LEVEL;
 exports.AD_CREATIVES = AD_CREATIVES;
 exports.ADSET_LEVEL = ADSET_LEVEL;
+exports.ADSET_INSIGHT = ADSET_INSIGHT;
