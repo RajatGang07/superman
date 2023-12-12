@@ -16,9 +16,10 @@ const authentication = require('./middleware/authenticate');
 const usersRoutes = require('./routes/userRoutes');
 const openRoutes = require('./routes/openRoutes');
 const HttpError = require('./models/httpError');
-const faceBookAppAuthenticationRoutes = require('./routes/faceBookAppAuthenticationRoutes')
-
-
+const faceBookAppAuthenticationRoutes = require('./routes/faceBookAppAuthenticationRoutes');
+const saveFaceebookCredentialsRoute = require('./routes/saveFaceebookCredentialsControllerRoutes');
+const facebookAdsRoute = require('./routes/facebookAds')
+const facebookGenerateCSV = require('./routes/facebookGenerateCSV');
 async function getApp() {
 
   // Database
@@ -48,6 +49,11 @@ async function getApp() {
   // app.use(authentication)
   app.use('/api/v1/users', usersRoutes);
   app.use('/api/v1/facebook/auth', faceBookAppAuthenticationRoutes)
+  app.use('/api/integrations/facebook_ads/ad_accounts', facebookAdsRoute)
+  app.use('/api/save/fb', saveFaceebookCredentialsRoute)
+  app.use('/api/v1/generate/csv', facebookGenerateCSV)
+
+
   // app.use('/api/v1/add/categories', categoryRoutes);
   app.use("/js", express.static(__dirname + "/node_modules/bootstrap/dist/js")); // redirect bootstrap JS
   app.use(
