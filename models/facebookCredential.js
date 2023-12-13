@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 const Schema = mongoose.Schema;
 
-const facebookScheema = new Schema({
+const facebookSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: false, unique: true },
   accessToken: { type: String, required: true, unique: true },
@@ -12,6 +12,6 @@ const facebookScheema = new Schema({
 
 });
 
-facebookScheema.plugin(uniqueValidator);
+facebookSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model("facebook-services", facebookScheema);
+module.exports = mongoose.model("facebook-services", facebookSchema);

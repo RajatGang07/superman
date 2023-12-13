@@ -20,10 +20,13 @@ const faceBookAppAuthenticationRoutes = require('./routes/faceBookAppAuthenticat
 const saveFaceebookCredentialsRoute = require('./routes/saveFaceebookCredentialsControllerRoutes');
 const facebookAdsRoute = require('./routes/facebookAds')
 const facebookGenerateCSV = require('./routes/facebookGenerateCSV');
+const facebookData = require('./routes/facebookData');
+
 async function getApp() {
 
   // Database
   var connectionInfo = await configData.getConnectionInfo();
+  console.log('connectionInfo', connectionInfo)
   mongoose.connect(connectionInfo.DATABASE_URL);
 
   var app = express();
@@ -52,6 +55,7 @@ async function getApp() {
   app.use('/api/integrations/facebook_ads/ad_accounts', facebookAdsRoute)
   app.use('/api/save/fb', saveFaceebookCredentialsRoute)
   app.use('/api/v1/generate/csv', facebookGenerateCSV)
+  app.use('/api/v1/ad/insights', facebookData)
 
 
   // app.use('/api/v1/add/categories', categoryRoutes);
