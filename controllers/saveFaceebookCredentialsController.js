@@ -30,7 +30,7 @@ const saveFaceebookCredentials = async (req, res, next) => {
     await facebookUser.save();
     
   } catch (err) {
-    const error = new HttpError("Facebbok credentials save failed, please try again", 500);
+    const error = new HttpError(`Facebbok credentials save failed, please try again ${err}`, 500);
     return next(error);
   }
 
