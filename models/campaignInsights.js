@@ -9,4 +9,4 @@ const campaignInsightsSchema = new Schema({
 
 campaignInsightsSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model("facebook-campaign-insights-services", campaignInsightsSchema);
+module.exports = mongoose.model("facebook-campaign-insights", campaignInsightsSchema);

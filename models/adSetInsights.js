@@ -9,4 +9,4 @@ const adSetInsightsSchema = new Schema({
 
 adSetInsightsSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model("facebook-ad-sets-insights-services", adSetInsightsSchema);
+module.exports = mongoose.model("facebook-ad-set-insights", adSetInsightsSchema);

@@ -90,8 +90,6 @@ const fetchAdCampaignAcounts = async (req, res, next) => {
     return next(error);
   }
 
-  console.log(response?.data, "response");
-
   return res.status(201).json({ response: response?.data });
 };
 

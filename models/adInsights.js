@@ -9,4 +9,4 @@ const facebookadInsightsSchema = new Schema({
 
 facebookadInsightsSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model("facebook-ad-creatives-level", facebookadInsightsSchema);
+module.exports = mongoose.model("facebook-ad-insights", facebookadInsightsSchema);

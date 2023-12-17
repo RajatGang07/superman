@@ -62,6 +62,7 @@ const fetchFacebookDataForAdvertsement = async (req, res, next) => {
   }
 
   let totalResponse = [];
+  let flattenedData = []
   try {
     for (let index = 0; index <= 1; index++) {
       //accountListOfLoggedInUser?.data?.data.length;
@@ -206,7 +207,7 @@ const fetchFacebookDataForAdvertsement = async (req, res, next) => {
     }
 
     // console.log("totalResponse", totalResponse);
-    const flattenedData = totalResponse.flatMap((item) => {
+    flattenedData = totalResponse.flatMap((item) => {
       const result = {};
       flattenObject(item, result);
       return result;
@@ -247,7 +248,7 @@ const fetchFacebookDataForAdvertsement = async (req, res, next) => {
     return next(error);
   }
 
-  return res.status(201).json({ response: accountListOfLoggedInUser?.data });
+  return res.status(201).json({ response: flattenedData });
 };
 
 exports.fetchFacebookDataForAdvertsement = fetchFacebookDataForAdvertsement;

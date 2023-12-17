@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 const Schema = mongoose.Schema;
 
-const facebookadInsightsSchema = new Schema({
+const facebookAdCreatives = new Schema({
   adInsights: { type: [], required: false, unique: true },
 
 });
 
-facebookadInsightsSchema.plugin(uniqueValidator);
+facebookAdCreatives.plugin(uniqueValidator);
 
-module.exports = mongoose.model("facebook-ad-insights-services", facebookadInsightsSchema);
+module.exports = mongoose.model("facebook-ad-creatives-levels", facebookAdCreatives);

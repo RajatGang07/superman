@@ -5,6 +5,6 @@ const facebookController = require('../controllers/facebookController');
 
 const router = express.Router();
 
-router.get('/', facebookController.getAuthenticate);
+router.post('/', facebookController.fetchFacebookLogInUsers);
 
 module.exports = router;
