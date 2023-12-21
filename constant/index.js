@@ -1,3 +1,4 @@
+// done
 const INSIGHT_FIELDS = [
   "date_start",
   "date_stop",
@@ -34,8 +35,10 @@ const INSIGHT_FIELDS = [
 
 const ADSET_FIELDS = ["effective_status"];
 
+// added
 const ADSET_INSIGHT = [ "date_start", "date_stop", "dma"];
 
+// added
 const CAMPAIGN_FIELDS = [
   "daily_budget",
   "lifetime_budget",
@@ -46,6 +49,7 @@ const CAMPAIGN_FIELDS = [
   "bid_strategy",
 ];
 
+// done
 const ACCOUNT_LEVEL = [
   "spend_cap",
   "timezone_name",
@@ -53,8 +57,10 @@ const ACCOUNT_LEVEL = [
   "amount_spent",
 ];
 
+// done
 const AD_CREATIVES = ["name", "object_type", "link_url"];
 
+// done
 const ADSET_LEVEL = [
   "bid_amount",
   "bid_strategy",

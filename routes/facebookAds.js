@@ -1,7 +1,7 @@
 const express = require('express');
 const { check } = require('express-validator');
 
-const facebookAdAccountsController = require('../controllers/facebookAdAccounts');
+const facebookAdAccountsController = require('../controllers/facebook/facebookAdAccounts');
 
 const router = express.Router();
 

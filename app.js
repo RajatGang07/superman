@@ -6,6 +6,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require('cors');
 const { format } = require("date-fns");
+const cron = require('node-cron');
 
 // 1st party dependencies
 var configData = require("./config/connection");
@@ -21,6 +22,9 @@ const saveFaceebookCredentialsRoute = require('./routes/saveFaceebookCredentials
 const facebookAdsRoute = require('./routes/facebookAds')
 const facebookGenerateCSV = require('./routes/facebookGenerateCSV');
 const facebookData = require('./routes/facebookData');
+const facebookConfig = require("./routes/facebookConfig");
+const facebookGenerateCSVUsingConfig = require("./routes/facebookGenerateCSVUsingConfig");
+const facebookGenerateCSVUsingConfigController = require('./controllers/facebook/facebookGenerateCSVUsingConfig');
 
 async function getApp() {
 
@@ -56,7 +60,17 @@ async function getApp() {
   app.use('/api/save/fb', saveFaceebookCredentialsRoute)
   app.use('/api/v1/generate/csv', facebookGenerateCSV)
   app.use('/api/v1/ad/insights', facebookData)
+  app.use('/api/v1/facebook/config', facebookConfig)
+  app.use('/api/v1/get/facebook', facebookConfig)
+  app.use('/api/v1/generate/csv/config', facebookGenerateCSVUsingConfig)
 
+
+  cron.schedule('* * * * *', () => {
+    console.log('Cron job running every minute');
+    // app.use('/api/v1/generate/csv/config', facebookGenerateCSVUsingConfig);
+    facebookGenerateCSVUsingConfigController.fetchFacebookDataForAdvertsement();
+
+  });
 
   // app.use('/api/v1/add/categories', categoryRoutes);
   app.use("/js", express.static(__dirname + "/node_modules/bootstrap/dist/js")); // redirect bootstrap JS

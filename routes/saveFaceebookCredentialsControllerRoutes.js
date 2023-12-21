@@ -1,5 +1,5 @@
 const express = require('express');
-const saveFaceebookCredentialsController = require('../controllers/saveFaceebookCredentialsController');
+const saveFaceebookCredentialsController = require('../controllers/facebook/saveFaceebookCredentialsController');
 const { check } = require('express-validator');
 
 const router = express.Router();

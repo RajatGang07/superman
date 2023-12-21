@@ -1,7 +1,7 @@
 const express = require('express');
 const { check } = require('express-validator');
 
-const facebookFieldsController = require('../controllers/facebookFields');
+const facebookFieldsController = require('../controllers/facebook/facebookFields');
 
 const router = express.Router();
 
