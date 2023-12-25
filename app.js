@@ -25,6 +25,7 @@ const facebookData = require('./routes/facebookData');
 const facebookConfig = require("./routes/facebookConfig");
 const facebookGenerateCSVUsingConfig = require("./routes/facebookGenerateCSVUsingConfig");
 const facebookGenerateCSVUsingConfigController = require('./controllers/facebook/facebookGenerateCSVUsingConfig');
+const monitorPipeline = require("./routes/monitorPipeline");
 
 async function getApp() {
 
@@ -63,14 +64,15 @@ async function getApp() {
   app.use('/api/v1/facebook/config', facebookConfig)
   app.use('/api/v1/get/facebook', facebookConfig)
   app.use('/api/v1/generate/csv/config', facebookGenerateCSVUsingConfig)
+  app.use('/api/v1/get/log', monitorPipeline)
 
 
-  cron.schedule('* * * * *', () => {
-    console.log('Cron job running every minute');
-    // app.use('/api/v1/generate/csv/config', facebookGenerateCSVUsingConfig);
-    facebookGenerateCSVUsingConfigController.fetchFacebookDataForAdvertsement();
+  // cron.schedule('* * * * *', () => {
+  //   console.log('Cron job running every minute');
+  //   // app.use('/api/v1/generate/csv/config', facebookGenerateCSVUsingConfig);
+  //   facebookGenerateCSVUsingConfigController.fetchFacebookDataForAdvertsement();
 
-  });
+  // });
 
   // app.use('/api/v1/add/categories', categoryRoutes);
   app.use("/js", express.static(__dirname + "/node_modules/bootstrap/dist/js")); // redirect bootstrap JS

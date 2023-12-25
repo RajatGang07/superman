@@ -22,6 +22,7 @@ const getFacebookConfig = async (req, res, next) => {
 const saveFacebookConfig = async (req, res, next) => {
   const error = validationResult(req);
   const {
+    configName,
     account,
     campaign,
     selectedAccountLevel,
@@ -39,6 +40,7 @@ const saveFacebookConfig = async (req, res, next) => {
 
   try {
     const createConfig = new FacebookConfig({
+      configName,
       account,
       campaign,
       selectedAccountLevel,
@@ -85,6 +87,7 @@ const deleteFacebookConfig = async (req, res, next) => {
 const updateFacebookConfig = async (req, res, next) => {
   const error = validationResult(req);
   const {
+    configName,
     account,
     campaign,
     selectedAccountLevel,
@@ -103,6 +106,7 @@ const updateFacebookConfig = async (req, res, next) => {
 
   const newData = {
     $set: {
+      configName,
       account,
       campaign,
       selectedAccountLevel,
