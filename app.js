@@ -57,6 +57,7 @@ async function getApp() {
   // app.use(authentication)
   app.use('/api/v1/users', usersRoutes);
   app.use('/api/v1/facebook/auth', faceBookAppAuthenticationRoutes)
+  app.use('/api/v1/facebook/disconnect', faceBookAppAuthenticationRoutes)
   app.use('/api/integrations/facebook_ads/ad_accounts', facebookAdsRoute)
   app.use('/api/save/fb', saveFaceebookCredentialsRoute)
   app.use('/api/v1/generate/csv', facebookGenerateCSV)

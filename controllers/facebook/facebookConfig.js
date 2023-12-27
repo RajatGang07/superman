@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const {  ObjectId } = require('mongodb');
 
 const HttpError = require("../../models/httpError");
 const FacebookConfig = require("../../models/facebookConfig");
@@ -66,10 +67,9 @@ const saveFacebookConfig = async (req, res, next) => {
 };
 
 const deleteFacebookConfig = async (req, res, next) => {
-  const error = validationResult(req);
   const { id } = req.body;
 
-  const query = { _id: new ObjectID(id) };
+  const query = { _id: new ObjectId(id) };
 
   try {
     const result = await FacebookConfig.deleteOne(query);
@@ -123,7 +123,7 @@ const updateFacebookConfig = async (req, res, next) => {
     },
   };
 
-  const query = { _id: new ObjectID(id) };
+  const query = { _id: new ObjectId(id) };
 
   try {
     const result = await FacebookConfig.updateOne(query, newData);
