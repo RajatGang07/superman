@@ -17,7 +17,8 @@ const facebookConfig = new Schema({
   configDays: {type: Object, required: true},
   selectedDays: { type: [], required: false, unique: false },
   cron: { type: String, required: true },
-
+  selectedDataSource: { type: String, required: true },
+  selectedFacebookUser: { type: Object, required: true },
 });
 
 facebookConfig.plugin(uniqueValidator);

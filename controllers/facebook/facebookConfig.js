@@ -6,7 +6,6 @@ const FacebookConfig = require("../../models/facebookConfig");
 
 const getFacebookConfig = async (req, res, next) => {
   const { userId } = req.body;
-  console.log("userId", userId);
   try {
     const facebookConfigs = await FacebookConfig.find({ userId: userId });
     res.json({
@@ -37,6 +36,8 @@ const saveFacebookConfig = async (req, res, next) => {
     configDays,
     selectedDays,
     cron,
+    selectedDataSource,
+    selectedFacebookUser
   } = req.body;
 
   try {
@@ -55,6 +56,8 @@ const saveFacebookConfig = async (req, res, next) => {
       configDays,
       selectedDays,
       cron,
+      selectedDataSource,
+      selectedFacebookUser
     });
 
     await createConfig.save();
@@ -102,6 +105,8 @@ const updateFacebookConfig = async (req, res, next) => {
     configDays,
     selectedDays,
     cron,
+    selectedDataSource,
+    selectedFacebookUser
   } = req.body;
 
   const newData = {
@@ -120,6 +125,8 @@ const updateFacebookConfig = async (req, res, next) => {
       configDays,
       selectedDays,
       cron,
+      selectedDataSource,
+      selectedFacebookUser
     },
   };
 

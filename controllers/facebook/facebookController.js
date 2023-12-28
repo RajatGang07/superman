@@ -29,7 +29,6 @@ const deleteFacebookLogInUsers = async (req, res, next) => {
 
   try {
     const result = await FacebookCredential.deleteOne(query);
-    console.log('result', result)
     if (result.deletedCount === 1) {
       return res.json({ message: "User deleted successfully" });
     } else {

@@ -36,7 +36,6 @@ const saveAdInsights = async (req, res, next) => {
 const fetchInsights = async (req, res, next) => {
   const { insightName } = req.body;
 
-  console.log('insightName', insightName)
   let response = [];
   try {
     if (insightName === "adInsights") {
