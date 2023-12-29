@@ -1,6 +1,6 @@
 const express = require('express');
 
-const facebookConfigController = require('../controllers/facebook/facebookConfig');
+const facebookConfigController = require('../../controllers/facebook/facebookConfig');
 
 const router = express.Router();
 

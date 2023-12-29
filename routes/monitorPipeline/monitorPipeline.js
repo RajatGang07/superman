@@ -1,6 +1,6 @@
 const express = require('express');
 
-const monitorPipelineController = require('../controllers/monitorPipeline/monitorPipeline');
+const monitorPipelineController = require('../../controllers/monitorPipeline/monitorPipeline');
 
 const router = express.Router();
 

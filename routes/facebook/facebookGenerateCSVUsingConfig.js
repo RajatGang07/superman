@@ -1,6 +1,6 @@
 const express = require('express');
 
-const facebookGenerateCSVUsingConfigController = require('../controllers/facebook/facebookGenerateCSVUsingConfig');
+const facebookGenerateCSVUsingConfigController = require('../../controllers/facebook/facebookGenerateCSVUsingConfig');
 
 const router = express.Router();
 

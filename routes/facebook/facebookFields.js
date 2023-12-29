@@ -1,13 +1,15 @@
 const express = require('express');
-const { check } = require('express-validator');
 
-const facebookFieldsController = require('../controllers/facebook/facebookFields');
+const facebookFieldsController = require('../../controllers/facebook/facebookFields');
 
 const router = express.Router();
 
 router.post('/', facebookFieldsController.saveAdInsights);
 
 router.post('/fields', facebookFieldsController.fetchInsights);
+
+router.post('/all/fields', facebookFieldsController.fetchAllFacebookFields);
+
 
 // router.post('/campaigns', facebookAdAccountsController.fetchAdCampaignAcounts);
 

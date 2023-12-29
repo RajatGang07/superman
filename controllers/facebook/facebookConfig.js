@@ -2,7 +2,7 @@ const { validationResult } = require("express-validator");
 const {  ObjectId } = require('mongodb');
 
 const HttpError = require("../../models/httpError");
-const FacebookConfig = require("../../models/facebookConfig");
+const FacebookConfig = require("../../models/facebook/facebookConfig");
 
 const getFacebookConfig = async (req, res, next) => {
   const { userId } = req.body;
@@ -20,7 +20,6 @@ const getFacebookConfig = async (req, res, next) => {
 };
 
 const saveFacebookConfig = async (req, res, next) => {
-  const error = validationResult(req);
   const {
     configName,
     account,
@@ -37,7 +36,11 @@ const saveFacebookConfig = async (req, res, next) => {
     selectedDays,
     cron,
     selectedDataSource,
-    selectedFacebookUser
+    selectedFacebookUser,
+    datePreset,
+    breakdowns,
+    timeIncrement
+
   } = req.body;
 
   try {
@@ -57,7 +60,10 @@ const saveFacebookConfig = async (req, res, next) => {
       selectedDays,
       cron,
       selectedDataSource,
-      selectedFacebookUser
+      selectedFacebookUser,
+      datePreset,
+      breakdowns,
+      timeIncrement
     });
 
     await createConfig.save();
@@ -106,7 +112,10 @@ const updateFacebookConfig = async (req, res, next) => {
     selectedDays,
     cron,
     selectedDataSource,
-    selectedFacebookUser
+    selectedFacebookUser,
+    datePreset,
+    breakdowns,
+    timeIncrement
   } = req.body;
 
   const newData = {
@@ -126,7 +135,10 @@ const updateFacebookConfig = async (req, res, next) => {
       selectedDays,
       cron,
       selectedDataSource,
-      selectedFacebookUser
+      selectedFacebookUser,
+      datePreset,
+      breakdowns,
+      timeIncrement
     },
   };
 

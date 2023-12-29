@@ -1,7 +1,7 @@
 const axios = require("axios");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 
-const FacebookCredential = require("../../models/facebookCredential");
+const FacebookCredential = require("../../models/facebook/facebookCredential");
 const HttpError = require("../../models/httpError");
 
 const {

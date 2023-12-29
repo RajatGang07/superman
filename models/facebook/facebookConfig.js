@@ -19,6 +19,9 @@ const facebookConfig = new Schema({
   cron: { type: String, required: true },
   selectedDataSource: { type: String, required: true },
   selectedFacebookUser: { type: Object, required: true },
+  datePreset:{ type: Object, required: false, unique: false },
+  breakdowns:{ type: [], required: false, unique: false },
+  timeIncrement:{ type: Object, required: false, unique: false },
 });
 
 facebookConfig.plugin(uniqueValidator);

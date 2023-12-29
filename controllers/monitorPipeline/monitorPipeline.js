@@ -1,5 +1,5 @@
 const HttpError = require("../../models/httpError");
-const MonitorPipeline = require("../../models/monitorPipeline");
+const MonitorPipeline = require("../../models/monitorPipeline/monitorPipeline");
 
 const getMonitorPipeline = async (req, res, next) => {
   const { userId } = req.body;

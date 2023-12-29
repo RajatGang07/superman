@@ -4,7 +4,7 @@ const {  ObjectId } = require('mongodb');
 
 const HttpError = require("../../models/httpError");
 const config = require("../../config");
-const FacebookCredential = require("../../models/facebookCredential");
+const FacebookCredential = require("../../models/facebook/facebookCredential");
 
 const fetchFacebookLogInUsers = async (req, res, next) => {
   const error = validationResult(req);

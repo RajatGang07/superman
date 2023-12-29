@@ -2,7 +2,7 @@ const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
-const FacebookCredential = require("../../models/facebookCredential");
+const FacebookCredential = require("../../models/facebook/facebookCredential");
 const HttpError = require("../../models/httpError");
 const config = require("../../config");
 

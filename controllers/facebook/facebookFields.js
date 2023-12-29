@@ -1,17 +1,17 @@
 const { v4: uuidv4 } = require("uuid");
-const { validationResult } = require("express-validator");
 
-const AdInsights = require("../../models/adInsights");
-const CampaignInsights = require("../../models/campaignInsights");
-const AdCreatives = require("../../models/adCreatives");
-const AdSetInsights = require("../../models/adSetInsights");
-const Account = require("../../models/account");
-const AdSetLevel = require("../../models/adSetLevel");
-const AdSetFields = require("../../models/adSetFields")
+const AdInsights = require("../../models/facebook/adInsights");
+const CampaignInsights = require("../../models/facebook/campaignInsights");
+const AdCreatives = require("../../models/facebook/adCreatives");
+const AdSetInsights = require("../../models/facebook/adSetInsights");
+const Account = require("../../models/facebook/account");
+const AdSetLevel = require("../../models/facebook/adSetLevel");
+const AdSetFields = require("../../models/facebook/adSetFields");
 const HttpError = require("../../models/httpError");
+const DatePreset = require("../../models/facebook/datePreset");
+const Breakdowns = require("../../models/facebook/breakdowns");
 
 const saveAdInsights = async (req, res, next) => {
-  const error = validationResult(req);
   const { adInsights } = req.body;
 
   for (let i = 0; i < adInsights.length; i++) {
@@ -39,7 +39,7 @@ const fetchInsights = async (req, res, next) => {
   let response = [];
   try {
     if (insightName === "adInsights") {
-      response = await AdInsights.find({},"");
+      response = await AdInsights.find({}, "");
     } else if (insightName === "campaignInsights") {
       response = await CampaignInsights.find({});
     } else if (insightName === "creativeLevel") {
@@ -48,20 +48,65 @@ const fetchInsights = async (req, res, next) => {
       response = await AdSetInsights.find({});
     } else if (insightName === "accountLevel") {
       response = await Account.find({});
-    }else if (insightName === "adSetLevel") {
+    } else if (insightName === "adSetLevel") {
       response = await AdSetLevel.find({});
-    }else if (insightName === "adSetFields") {
+    } else if (insightName === "adSetFields") {
       response = await AdSetFields.find({});
+    } else if (insightName === "datePreset") {
+      response = await DatePreset.find({});
+    } else if (insightName === "breakdowns") {
+      response = await Breakdowns.find({});
     }
   } catch (err) {
     const error = new HttpError(`Please try again ${err}`, 500);
     return next(error);
   }
-  console.log('response', response)
   res
     .status(200)
     .json({ data: response.map((user) => user.toObject({ getters: true })) });
 };
 
+const fetchAllFacebookFields = async (req, res, next) => {
+  const { insightNameList } = req.body;
+  let response = {}
+  try {
+    for (let i = 0; i < insightNameList.length; i++) {
+      if (insightNameList[i] === "adInsights") {
+        const adInsightsResponse = await AdInsights.find({}, "");
+        response["adInsights"] = adInsightsResponse;
+      } else if (insightNameList[i] === "campaignInsights") {
+        const campaignInsightsResponse = await CampaignInsights.find({});
+        response["campaignInsights"] = campaignInsightsResponse;
+      } else if (insightNameList[i] === "creativeLevel") {
+        const creativeLevelResponse = await AdCreatives.find({});
+        response["creativeLevel"] = creativeLevelResponse;
+      } else if (insightNameList[i] === "adSetInsights") {
+        const adSetInsightsResponse = await AdSetInsights.find({});
+        response["adSetInsights"] = adSetInsightsResponse;
+      } else if (insightNameList[i] === "accountLevel") {
+        const accountLevelResponse = await Account.find({});
+        response["accountLevel"] = accountLevelResponse;
+      } else if (insightNameList[i] === "adSetLevel") {
+        const adSetLevelResponse = await AdSetLevel.find({});
+        response["adSetLevel"] = adSetLevelResponse;
+      } else if (insightNameList[i] === "adSetFields") {
+        const adSetFieldsResponse = await AdSetFields.find({});
+        response["adSetFields"] = adSetFieldsResponse;
+      } else if (insightNameList[i] === "datePreset") {
+        const DatePresetResponse = await DatePreset.find({});
+        response["datePreset"] = DatePresetResponse;
+      } else if (insightNameList[i] === "breakdowns") {
+        const BreakdownsResponse = await Breakdowns.find({});
+        response["breakdowns"] = BreakdownsResponse;
+      }
+    }
+  } catch (err) {
+    const error = new HttpError(`Please try again ${err}`, 500);
+    return next(error);
+  }
+  res.status(200).json({ data: response });
+};
+
 exports.saveAdInsights = saveAdInsights;
 exports.fetchInsights = fetchInsights;
+exports.fetchAllFacebookFields = fetchAllFacebookFields;

@@ -14,18 +14,19 @@ var indexRouter = require("./routes/openRoutes");
 const config = require('./config');
 const defaultMiddleware = require('./middleware/default');
 const authentication = require('./middleware/authenticate');
-const usersRoutes = require('./routes/userRoutes');
+const usersRoutes = require('./routes/user/userRoutes');
 const openRoutes = require('./routes/openRoutes');
 const HttpError = require('./models/httpError');
-const faceBookAppAuthenticationRoutes = require('./routes/faceBookAppAuthenticationRoutes');
+const faceBookAppAuthenticationRoutes = require('./routes/facebook/faceBookAppAuthenticationRoutes');
 const saveFaceebookCredentialsRoute = require('./routes/saveFaceebookCredentialsControllerRoutes');
-const facebookAdsRoute = require('./routes/facebookAds')
-const facebookGenerateCSV = require('./routes/facebookGenerateCSV');
-const facebookData = require('./routes/facebookData');
-const facebookConfig = require("./routes/facebookConfig");
-const facebookGenerateCSVUsingConfig = require("./routes/facebookGenerateCSVUsingConfig");
+const facebookAdsRoute = require('./routes/facebook/facebookAds')
+const facebookGenerateCSV = require('./routes/facebook/facebookGenerateCSV');
+const facebookFields = require('./routes/facebook/facebookFields');
+const facebookConfig = require("./routes/facebook/facebookConfig");
+const report = require("./routes/report/report");
+const facebookGenerateCSVUsingConfig = require("./routes/facebook/facebookGenerateCSVUsingConfig");
 const facebookGenerateCSVUsingConfigController = require('./controllers/facebook/facebookGenerateCSVUsingConfig');
-const monitorPipeline = require("./routes/monitorPipeline");
+const monitorPipeline = require("./routes/monitorPipeline/monitorPipeline");
 
 async function getApp() {
 
@@ -61,12 +62,13 @@ async function getApp() {
   app.use('/api/integrations/facebook_ads/ad_accounts', facebookAdsRoute)
   app.use('/api/save/fb', saveFaceebookCredentialsRoute)
   app.use('/api/v1/generate/csv', facebookGenerateCSV)
-  app.use('/api/v1/ad/insights', facebookData)
+  app.use('/api/v1/ad/insights', facebookFields)
+  app.use('/api/v1/get', facebookFields)
   app.use('/api/v1/facebook/config', facebookConfig)
   app.use('/api/v1/get/facebook', facebookConfig)
   app.use('/api/v1/generate/csv/config', facebookGenerateCSVUsingConfig)
   app.use('/api/v1/get/log', monitorPipeline)
-
+  app.use('/api/v1/report', report)
 
   // cron.schedule('* * * * *', () => {
   //   console.log('Cron job running every minute');

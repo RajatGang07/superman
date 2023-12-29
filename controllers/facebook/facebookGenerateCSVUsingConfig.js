@@ -2,14 +2,13 @@ const axios = require("axios");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 const cron = require("node-cron");
 const fs = require("fs");
-const azure = require("azure-storage");
 const { BlobServiceClient, ContainerClient } = require("@azure/storage-blob");
 
-const FacebookCredential = require("../../models/facebookCredential");
+const FacebookCredential = require("../../models/facebook/facebookCredential");
 const HttpError = require("../../models/httpError");
 
-const facebookConfig = require("../../models/facebookConfig");
-const MonitorPipeline = require("../../models/monitorPipeline");
+const facebookConfig = require("../../models/facebook/facebookConfig");
+const MonitorPipeline = require("../../models/monitorPipeline/monitorPipeline");
 
 function flattenObject(obj, result, prefix = "") {
   for (const key in obj) {
