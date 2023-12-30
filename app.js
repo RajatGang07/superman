@@ -65,7 +65,8 @@ async function getApp() {
   app.use('/api/v1/ad/insights', facebookFields)
   app.use('/api/v1/get', facebookFields)
   app.use('/api/v1/facebook/config', facebookConfig)
-  app.use('/api/v1/get/facebook', facebookConfig)
+  app.use('/api/v1/get/facebook', facebookConfig);
+  app.use('/api/v1/put/facebook', facebookConfig)
   app.use('/api/v1/generate/csv/config', facebookGenerateCSVUsingConfig)
   app.use('/api/v1/generate/csv/single', facebookGenerateCSVUsingConfig)
   app.use('/api/v1/get/log', monitorPipeline)

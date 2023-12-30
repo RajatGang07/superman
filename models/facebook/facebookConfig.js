@@ -3,7 +3,7 @@ const uniqueValidator = require("mongoose-unique-validator");
 const Schema = mongoose.Schema;
 
 const facebookConfig = new Schema({
-  configName: { type: String, required: true, unique: false },
+  configName: { type: String, required: true, unique: true },
   account: { type: Object, required: true },
   campaign: { type: [], required: false, unique: false },
   selectedAccountLevel: { type: [], required: false, unique: false },

@@ -180,7 +180,7 @@ const updateFacebookConfig = async (req, res, next) => {
   } catch (err) {
     return res
     .status(500)
-    .json({ data: {}, message: "Something went wrong", status: false });
+    .json({ data: {}, message: `Something went wrong ${err}`, status: false });
   }
 };
 
