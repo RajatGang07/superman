@@ -1,19 +1,13 @@
 const { validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const FacebookCredential = require("../../models/facebook/facebookCredential");
-const HttpError = require("../../models/httpError");
-const config = require("../../config");
 
 const saveFaceebookCredentials = async (req, res, next) => {
   const error = validationResult(req);
 
   if (!error.isEmpty()) {
-    const error = new HttpError(
-      "Invalid inputs passed, Please check your data",
-      422
-    );
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: `Invalid inputs passed, Please check your data`, status: false });
   }
 
   const { name, accessToken, userId, email, image } = req.body;
@@ -30,11 +24,12 @@ const saveFaceebookCredentials = async (req, res, next) => {
     await facebookUser.save();
     
   } catch (err) {
-    const error = new HttpError(`Facebbok credentials save failed, please try again ${err}`, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: `Facebbok credentials save failed, please try again ${err}`, status: false });
   }
 
-  res.status(201).json({ name: facebookUser.name, email: facebookUser.email });
+  res.status(201).json({ data:{ name: facebookUser.name, email: facebookUser.email}, status: true, message: 'Save all data' });
 };
 
 exports.saveFaceebookCredentials = saveFaceebookCredentials;

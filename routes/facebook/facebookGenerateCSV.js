@@ -5,6 +5,6 @@ const facebookGenerateCSVController = require('../../controllers/facebook/facebo
 
 const router = express.Router();
 
-router.post('/', facebookGenerateCSVController.fetchFacebookDataForAdvertsement);
+router.post('/', facebookGenerateCSVController.fetchFacebookDataForAdvertisement);
 
 module.exports = router;

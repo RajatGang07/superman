@@ -11,12 +11,6 @@ const router = express.Router();
 // Login
 router.post('/api/v1/login', userController.login);
 // SignUp
-router.post('/api/v1/signup',
-    [
-        check('name').not().isEmpty(),
-        check('email').normalizeEmail().isEmail(),
-        check('password').isLength({ min: 8 })
-    ],
-    userController.signUp);
+router.post('/api/v1/signup',userController.signUp);
 
 module.exports = router;

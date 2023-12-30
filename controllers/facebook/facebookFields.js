@@ -22,15 +22,13 @@ const saveAdInsights = async (req, res, next) => {
     try {
       await adInsightsSave.save();
     } catch (err) {
-      const error = new HttpError(
-        `Ad Insights save failed, please try again ${err}`,
-        500
-      );
-      return next(error);
+      return res
+      .status(500)
+      .json({ data: {}, message: `Ad Insights save failed, please try again ${err}`, status: false });
     }
   }
 
-  res.status(201).json({ data: adInsights, message: "Saved successfully" });
+  res.status(201).json({ data: adInsights, message: "Saved successfully", status: true });
 };
 
 const fetchInsights = async (req, res, next) => {
@@ -58,12 +56,13 @@ const fetchInsights = async (req, res, next) => {
       response = await Breakdowns.find({});
     }
   } catch (err) {
-    const error = new HttpError(`Please try again ${err}`, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: `Please try again ${err}`, status: false });
   }
   res
     .status(200)
-    .json({ data: response.map((user) => user.toObject({ getters: true })) });
+    .json({ data: response, status: true, message: `Fetch ${insightName} fields` });
 };
 
 const fetchAllFacebookFields = async (req, res, next) => {
@@ -101,10 +100,11 @@ const fetchAllFacebookFields = async (req, res, next) => {
       }
     }
   } catch (err) {
-    const error = new HttpError(`Please try again ${err}`, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: `Please try again ${err}`, status: false });
   }
-  res.status(200).json({ data: response });
+  res.status(200).json({ data: response, status: true, message: 'Fetch all fields' });
 };
 
 exports.saveAdInsights = saveAdInsights;

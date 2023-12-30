@@ -4,6 +4,8 @@ const facebookGenerateCSVUsingConfigController = require('../../controllers/face
 
 const router = express.Router();
 
-router.post('/', facebookGenerateCSVUsingConfigController.fetchFacebookDataForAdvertsement);
+router.post('/', facebookGenerateCSVUsingConfigController.fetchFacebookDataForAdvertisement);
+
+router.post('/config', facebookGenerateCSVUsingConfigController.fetchFacebookDataForSingleConfig);
 
 module.exports = router;

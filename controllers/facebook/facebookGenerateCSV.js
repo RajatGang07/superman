@@ -19,8 +19,9 @@ const getAdAccountList = async (accessToken) => {
     const response = await axios.get(appAccessTokenUrl);
     return response;
   } catch (error) {
-    console.error(`Error: Failed to get app access token. ${error.message}`);
-    return null;
+    return res
+    .status(500)
+    .json({ data: {}, message: err, status: false });
   }
 };
 
@@ -35,20 +36,27 @@ function flattenObject(obj, result, prefix = "") {
   }
 }
 
-const fetchFacebookDataForAdvertsement = async (req, res, next) => {
+const fetchFacebookDataForAdvertisement = async (req, res, next) => {
   const { userId } = req.body;
+  if (!userId) {
+    return res
+    .status(401)
+    .json({ data: {}, message: `Missing userId`, status: false });
+  }
   let existingUser;
 
   try {
     existingUser = await FacebookCredential.findOne({ userId: userId });
   } catch (err) {
-    const error = new HttpError(err, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: err, status: false });
   }
 
   if (!existingUser) {
-    const error = new HttpError("Wrong user", 403);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: "Wrong user", status: false });
   }
 
   let accountListOfLoggedInUser;
@@ -57,8 +65,9 @@ const fetchFacebookDataForAdvertsement = async (req, res, next) => {
       existingUser?.accessToken
     );
   } catch (err) {
-    const error = new HttpError(err, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: err, status: false });
   }
 
   let totalResponse = [];
@@ -78,7 +87,7 @@ const fetchFacebookDataForAdvertsement = async (req, res, next) => {
             console.log("adId", adId);
             const insightURL = `https://graph.facebook.com/v18.0/${adId}/insights?fields=${INSIGHT_FIELDS.join(
               ","
-            )}&date_preset=last_30d&access_token=${existingUser?.accessToken}`;
+            )}&date_preset=last_30d&time_increment=7&access_token=${existingUser?.accessToken}`;
             const insightResponse = await axios.get(insightURL);
             console.log("insightURL", insightURL);
             console.log(
@@ -109,7 +118,7 @@ const fetchFacebookDataForAdvertsement = async (req, res, next) => {
 
             console.log("adSetResponse", adSetResponse?.data);
 
-            const adSetInsightURL = `https://graph.facebook.com/v18.0/${adSetId}/insights?breakdowns=dma&date_preset=last_30d&access_token=${existingUser?.accessToken}`;
+            const adSetInsightURL = `https://graph.facebook.com/v18.0/${adSetId}/insights?breakdowns=dma&date_preset=last_30d&time_increment=7&access_token=${existingUser?.accessToken}`;
             const adSetInsightResponse = await axios.get(adSetInsightURL);
             console.log(
               "adSetInsightResponse",
@@ -243,11 +252,12 @@ const fetchFacebookDataForAdvertsement = async (req, res, next) => {
       .then(() => console.log("CSV file written successfully"))
       .catch((error) => console.error("Error writing CSV file:", error));
   } catch (err) {
-    const error = new HttpError(err, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: err, status: false });
   }
 
   return res.status(201).json({ response: flattenedData });
 };
 
-exports.fetchFacebookDataForAdvertsement = fetchFacebookDataForAdvertsement;
+exports.fetchFacebookDataForAdvertisement = fetchFacebookDataForAdvertisement;

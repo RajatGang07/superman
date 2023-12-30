@@ -22,6 +22,8 @@ const facebookConfig = new Schema({
   datePreset:{ type: Object, required: false, unique: false },
   breakdowns:{ type: [], required: false, unique: false },
   timeIncrement:{ type: Object, required: false, unique: false },
+  createdAt: { type: Date, required: true },
+
 });
 
 facebookConfig.plugin(uniqueValidator);

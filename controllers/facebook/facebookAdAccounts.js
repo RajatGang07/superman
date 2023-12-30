@@ -1,10 +1,5 @@
-const { validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs");
 const axios = require("axios");
-const jwt = require("jsonwebtoken");
 const FacebookCredential = require("../../models/facebook/facebookCredential");
-const HttpError = require("../../models/httpError");
-const config = require("../../config");
 
 const getAdAccountList = async (accessToken) => {
   try {
@@ -19,26 +14,35 @@ const getAdAccountList = async (accessToken) => {
 
 const fetchAdAcounts = async (req, res, next) => {
   const { userId } = req.body;
+  if (!userId) {
+    return res
+    .status(401)
+    .json({ data: {}, message: `Missing userId`, status: false });
+  }
+  
   let existingUser;
 
   try {
     existingUser = await FacebookCredential.findOne({ userId: userId });
   } catch (err) {
-    const error = new HttpError("Please login, please try again", 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: err, status: false });
   }
 
   if (!existingUser) {
-    const error = new HttpError("Wrong user", 403);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: "Wrong user", status: false });
   }
 
   let response;
   try {
     response = await getAdAccountList(existingUser?.accessToken);
   } catch (err) {
-    const error = new HttpError(err, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: err, status: false });
   }
 
   try {
@@ -47,11 +51,12 @@ const fetchAdAcounts = async (req, res, next) => {
       { accountList: response?.data?.data }
     );
   } catch (err) {
-    const error = new HttpError(err, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: err, status: false });
   }
 
-  return res.status(201).json({ response: response?.data });
+  return res.status(201).json({ data: response?.data, message: 'Fetch ad Accounts', status:true });
 };
 
 
@@ -72,23 +77,26 @@ const fetchAdCampaignAcounts = async (req, res, next) => {
   try {
     existingUser = await FacebookCredential.findOne({ userId: userId });
   } catch (err) {
-    const error = new HttpError(err, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: err, status: false });
   }
 
   if (!existingUser) {
-    const error = new HttpError("Wrong user", 403);
-    return next(error);
+    return res
+    .status(403)
+    .json({ data: {}, message: "Wrong user", status: false });
   }
   let response;
   try {
     response = await getAdCampaignAccountList(existingUser?.accessToken, actId, field);
   } catch (err) {
-    const error = new HttpError(err, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: err, status: false });
   }
 
-  return res.status(201).json({ response: response?.data });
+  return res.status(201).json({ data: response?.data, status: true, message: 'Fetch data ' });
 };
 
 exports.fetchAdAcounts = fetchAdAcounts;

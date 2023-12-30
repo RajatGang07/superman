@@ -67,13 +67,14 @@ async function getApp() {
   app.use('/api/v1/facebook/config', facebookConfig)
   app.use('/api/v1/get/facebook', facebookConfig)
   app.use('/api/v1/generate/csv/config', facebookGenerateCSVUsingConfig)
+  app.use('/api/v1/generate/csv/single', facebookGenerateCSVUsingConfig)
   app.use('/api/v1/get/log', monitorPipeline)
   app.use('/api/v1/report', report)
 
   // cron.schedule('* * * * *', () => {
   //   console.log('Cron job running every minute');
   //   // app.use('/api/v1/generate/csv/config', facebookGenerateCSVUsingConfig);
-  //   facebookGenerateCSVUsingConfigController.fetchFacebookDataForAdvertsement();
+  //   facebookGenerateCSVUsingConfigController.fetchFacebookDataForAdvertisement();
 
   // });
 

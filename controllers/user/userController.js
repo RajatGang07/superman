@@ -1,110 +1,117 @@
-const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../models/user/user");
-const HttpError = require("../../models/httpError");
 const config = require("../../config");
 
 const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({}, "-password");
-    res.json({ users: users.map((user) => user.toObject({ getters: true })) });
+    return res.json({
+      users: users.map((user) => user.toObject({ getters: true })),
+    });
   } catch (err) {
-    const error = new HttpError("No user found", 500);
-    return next(error);
+    return res
+      .status(200)
+      .json({ users: [], message: "No user found", status: false });
   }
 };
 
-const signUp = async (req, res, next) => {
-  const error = validationResult(req);
-
-  if (!error.isEmpty()) {
-    const error = new HttpError(
-      "Invalid inputs passed, Please check your data",
-      422
-    );
-    return next(error);
-  }
-
-  const { name, email, password } = req.body;
-
-  let existingUser;
+const signUp = async (req, res) => {
   try {
-    existingUser = await User.findOne({ email: email });
+    let { email, password, confirmPassword, name, mobileNumber, companyName, readTermsAndConditions } = req.body;
+
+    if (!email || !password || !confirmPassword || !mobileNumber || !companyName || !readTermsAndConditions)
+      return res.status(400).json({ message: "Not all fields have been entered.", status: false });
+    if (password.length < 5)
+      return res
+        .status(400)
+        .json({ message: "The password needs to be at least 5 characters long.", status: false });
+    if (password !== confirmPassword)
+      return res
+        .status(400)
+        .json({ message: "Enter the same password twice for verification.", status: false });
+
+    const existingUser = await User.findOne({ email: email });
+    if (existingUser)
+      return res
+        .status(400)
+        .json({ message: "An account with this email already exists.", status: false });
+
+    if (!name) name = email;
+
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    const newUser = new User({
+      email,
+      password: passwordHash,
+      name,
+      mobileNumber,
+      companyName,
+      readTermsAndConditions
+    });
+    const savedUser = await newUser.save();
+    res.status(200).send({
+      status: true,
+      data: {
+        id: savedUser._id,
+        name: savedUser.name,
+        mobileNumber: savedUser.mobileNumber,
+        companyName: savedUser.companyName,
+        email: savedUser?.email
+      },
+      message: "Account created successfully",
+    });
   } catch (err) {
-    const error = new HttpError("Singup failed", 500);
-    return next(error);
+    res.status(500).json({
+      status: false,
+      result: null,
+      message: err.message,
+    });
   }
-
-  if (existingUser) {
-    const error = new HttpError("User exist already", 422);
-    return next(error);
-  }
-
-  let hashedPassword;
-  try {
-    hashedPassword = await bcrypt.hash(password, 12);
-  } catch (err) {
-    const error = new HttpError("Could not create user, please try again", 500);
-    return next(error);
-  }
-  const createdUser = new User({
-    name,
-    email,
-    password: hashedPassword,
-  });
-
-  try {
-    await createdUser.save();
-  } catch (err) {
-    const error = new HttpError("Sign up failed, please try again", 500);
-    return next(error);
-  }
-
-  let token;
-  try {
-    token = jwt.sign(
-      { userId: createdUser.id, email: createdUser.email },
-      config.jwt.secret,
-      { expiresIn: "1h" }
-    );
-  } catch (err) {
-    const error = new HttpError("Sign up failed, please try again", 500);
-    return next(error);
-  }
-
-  res
-    .status(201)
-    .json({ userId: createdUser.id, email: createdUser.email, token: token });
 };
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
   let existingUser;
-
+  if (!email || !password) {
+    return res
+    .status(401)
+    .json({ data: {}, message: `Missing Email or Password`, status: false });
+  }
   try {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
-    const error = new HttpError("Logging failed, please try again", 500);
-    return next(error);
+    return res.status(500).json({
+      data: {},
+      message: "Logging failed, please try again",
+      status: false,
+    });
   }
 
   if (!existingUser) {
-    const error = new HttpError("Wrong Password", 403);
-    return next(error);
+    return res
+      .status(500)
+      .json({ data: {}, message: "Wrong Password", status: false });
   }
 
   let isValidPassword = true;
   try {
-      isValidPassword = await bcrypt.compare(password, existingUser.password);
+    isValidPassword = await bcrypt.compare(password, existingUser.password);
   } catch (err) {
-      const error = new HttpError('Check your credentials and try again', 403);
-      return next(error);
+    return res.status(403).json({
+      data: {},
+      message: "Check your credentials and try again",
+      status: false,
+    });
   }
 
   if (!isValidPassword) {
-    const error = new HttpError("Check your credentials and try again", 403);
-    return next(error);
+    return res.status(403).json({
+      data: {},
+      message: "Check your credentials and try again",
+      status: false,
+    });
   }
 
   let token;
@@ -115,15 +122,21 @@ const login = async (req, res, next) => {
       { expiresIn: "1h" }
     );
   } catch (err) {
-    const error = new HttpError("Login failed, please try again", 500);
-    return next(error);
+    return res.status(500).json({
+      data: {},
+      message: "Login failed, please try again",
+      status: false,
+    });
   }
 
-  res.json({
+  return res.json({
     message: "Logged In",
-    userId: existingUser.id,
-    email: existingUser.email,
-    token: token,
+    data: {
+      userId: existingUser.id,
+      email: existingUser.email,
+      token: token,
+    },
+    status: true,
   });
 };
 

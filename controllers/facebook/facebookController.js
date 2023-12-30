@@ -1,43 +1,45 @@
-const readline = require('readline');
-const { validationResult } = require("express-validator");
-const {  ObjectId } = require('mongodb');
+const { ObjectId } = require("mongodb");
 
-const HttpError = require("../../models/httpError");
-const config = require("../../config");
 const FacebookCredential = require("../../models/facebook/facebookCredential");
 
 const fetchFacebookLogInUsers = async (req, res, next) => {
-  const error = validationResult(req);
   const { userId } = req.body;
-
-let existingUser;
+  if (!userId) {
+    return res
+    .status(401)
+    .json({ data: {}, message: `Missing userId`, status: false });
+  }
+  let existingUser;
   try {
     existingUser = await FacebookCredential.find({ userId: userId });
   } catch (err) {
     const error = new HttpError(err, 500);
     return next(error);
   }
- 
-  return res.json({ existingFacebookUserList: existingUser.map((user) => user.toObject({ getters: true })) });
+  return res.json({ data: existingUser.map((user) => user.toObject({ getters: true })), status: true });
+
 };
 
 const deleteFacebookLogInUsers = async (req, res, next) => {
-  const error = validationResult(req);
   const { id } = req.body;
-
+  if (!id) {
+    return res
+    .status(401)
+    .json({ data: {}, message: `Missing id`, status: false });
+  }
   const query = { _id: new ObjectId(id) };
 
   try {
     const result = await FacebookCredential.deleteOne(query);
     if (result.deletedCount === 1) {
-      return res.json({ message: "User deleted successfully" });
+      return res.json({ message: "User deleted successfully", status: true });
     } else {
-      return res.json({ message: "User not found" });
+      return res.json({ message: "User not found", status: false });
     }
   } catch (err) {
-    console.log('err', err)
-    const error = new HttpError(err, 500);
-    return next(error);
+    return res
+      .status(500)
+      .json({ data: {}, message: "Something went wrong", status: false });
   }
 };
 
