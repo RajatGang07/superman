@@ -13,8 +13,9 @@ const fetchFacebookLogInUsers = async (req, res, next) => {
   try {
     existingUser = await FacebookCredential.find({ userId: userId });
   } catch (err) {
-    const error = new HttpError(err, 500);
-    return next(error);
+    return res
+    .status(500)
+    .json({ data: {}, message: `Something went wrong ${err.message}`, status: false });
   }
   return res.json({ data: existingUser.map((user) => user.toObject({ getters: true })), status: true });
 
