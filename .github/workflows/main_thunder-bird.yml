@@ -23,7 +23,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm install --legacy-peer-deps
+          npm install
           npm run build --if-present
           npm run test --if-present
 
@@ -59,4 +59,4 @@ jobs:
           app-name: 'thunder-bird'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4EB269E2EA814700808A1B1953FE8914 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B78732A0EDA94B9AA72324C33527265D }}
