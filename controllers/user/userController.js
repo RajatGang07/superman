@@ -92,7 +92,7 @@ const login = async (req, res, next) => {
   if (!existingUser) {
     return res
       .status(500)
-      .json({ data: {}, message: "Wrong Password", status: false });
+      .json({ data: {}, message: "User does not exist", status: false });
   }
 
   let isValidPassword = true;

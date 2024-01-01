@@ -356,7 +356,7 @@ const fetchFacebookDataForSingleConfig = async (req, res, next) => {
       const INSIGHT_FIELDS = facebookConfigs[i].selectedAdInsights.map(
         (item) => item.label
       );
-      const CAMPAIGN_FIELDS = facebookConfigs[i].selectedAdSetFields.map(
+      const CAMPAIGN_FIELDS = facebookConfigs[i].selectedCampaignInsights.map(
         (item) => item.label
       );
       const ADSET_LEVEL = facebookConfigs[i].selectedAdSetLevel.map(
