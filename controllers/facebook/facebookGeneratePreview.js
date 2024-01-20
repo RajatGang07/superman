@@ -60,8 +60,9 @@ const fetchFacebookDataForSingleConfigPreview = async (req, res, next) => {
       // console.log('break_downs',break_downs)
 
       if (!existingUser) {
-        const error = new HttpError("Wrong user", 403);
-        return next(error);
+        return res
+          .status(500)
+          .json({ data: {}, message: `Wrong user`, status: false });
       }
       const adAccountId = account?.value;
       console.log('adAccountId',adAccountId)
@@ -193,7 +194,15 @@ const fetchFacebookDataForSingleConfigPreview = async (req, res, next) => {
 
             totalResponse = [...totalResponse, ...updatedAdData];
           }
+        } else {
+          return res
+            .status(500)
+            .json({ data: {}, message: `Missing ads response ${adsURL}`, status: false });
         }
+      } else {
+        return res
+        .status(500)
+        .json({ data: {}, message: `Missing adAccountId`, status: false });
       }
     }
     console.log("totalResponse", totalResponse);

@@ -64,8 +64,9 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
         userId: facebookConfigs[i].userId,
       });
       if (!existingUser) {
-        const error = new HttpError("Wrong user", 403);
-        return next(error);
+        return res
+          .status(500)
+          .json({ data: {}, message: `Wrong user`, status: false });
       }
       const adAccountId = facebookConfigs[i]?.account?.value;
       if (adAccountId) {
@@ -96,6 +97,11 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
             const adSetsResponse = await axios.get(fetchAdSets);
 
             const adSetId = insightResponse?.data?.data?.[i]?.adset_id;
+            if (!adSetId) {
+              return res
+                .status(500)
+                .json({ data: {}, message: `Missing adSetId`, status: false });
+            }
 
             const adSetsURL = `https://graph.facebook.com/v18.0/${adSetId}?fields=${ADSET_LEVEL}&date_preset=${datePreset}&access_token=${existingUser?.accessToken}`;
             const adSetResponse = await axios.get(adSetsURL);
@@ -192,7 +198,19 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
 
             totalResponse = [...totalResponse, ...updatedAdData];
           }
+        } else {
+          return res
+            .status(500)
+            .json({
+              data: {},
+              message: `No response in ${adsURL}`,
+              status: false,
+            });
         }
+      } else {
+        return res
+          .status(500)
+          .json({ data: {}, message: `Missing adAccountId`, status: false });
       }
       console.log("totalResponse", totalResponse);
       flattenedData = totalResponse.flatMap((item) => {
@@ -243,8 +261,7 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
         .catch((error) => console.error("Error writing CSV file:", error));
       // });
     }
-  } catch (err) {
-  }
+  } catch (err) {}
 
   return "Generated succesfully";
 };
@@ -406,13 +423,16 @@ const fetchFacebookDataForSingleConfig = async (req, res, next) => {
             // console.log('campaignResponse',campaignResponse?.data?.data)
 
             const fetchAdSets = `https://graph.facebook.com/v18.0/${adAccountId}/adsets?fields=${ADSET_FIELDS}&date_preset=${datePreset}&access_token=${existingUser?.accessToken}`;
+            console.log("campaignURL", campaignURL);
+
             const adSetsResponse = await axios.get(fetchAdSets);
-            console.log("fetchAdSets", fetchAdSets);
+            console.log("fetchAdSets >>>", fetchAdSets);
             // console.log('adSetsResponse',adSetsResponse?.data?.data)
 
             const adSetId = insightResponse?.data?.data?.[i]?.adset_id;
-
+            console.log("adSetId", adSetId, insightResponse?.data?.data);
             const adSetsURL = `https://graph.facebook.com/v18.0/${adSetId}?fields=${ADSET_LEVEL}&date_preset=${datePreset}&access_token=${existingUser?.accessToken}`;
+            console.log("adSetsURL", adSetsURL);
             const adSetResponse = await axios.get(adSetsURL);
 
             const adSetInsightURL = `https://graph.facebook.com/v18.0/${adSetId}/insights?breakdowns=${breakdowns.join(
@@ -552,7 +572,7 @@ const fetchFacebookDataForSingleConfig = async (req, res, next) => {
           const accountKey =
             "kXDynJPx+tTsnkvrWVI0eHvfxddEO0QXsF9sxK2lmHGnHR/adHWhTlbDDwgNFt+C7ePtNWl3qsqO+AStPHnzxw==";
 
-        uploadToAzureStorage(
+          uploadToAzureStorage(
             storageAccount,
             storageAccessKey,
             containerName,

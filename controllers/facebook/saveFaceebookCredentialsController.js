@@ -14,14 +14,55 @@ const saveFaceebookCredentials = async (req, res, next) => {
       });
   }
 
-  const { name, accessToken, userId, email, image } = req.body;
+  const { name, accessToken, userId, email, image, fbEmail } = req.body;
 
+  let existingUser;
+
+  try {
+    existingUser = await FacebookCredential.findOne({ fbEmail: fbEmail });
+  } catch (err) {
+    return res
+    .status(500)
+    .json({ data: {}, message: err, status: false });
+  }
+
+  if (existingUser) {
+    return res
+    .status(500)
+    .json({ data: {}, message: `${fbEmail} already exists`, status: false });
+  }
+
+  if (!name) {
+    return res
+    .status(401)
+    .json({ data: {}, message: `Missing name`, status: false });
+  }
+
+  if (!email) {
+    return res
+    .status(401)
+    .json({ data: {}, message: `Missing email`, status: false });
+  }
+
+  if (!fbEmail) {
+    return res
+    .status(401)
+    .json({ data: {}, message: `Missing facebook email`, status: false });
+  }
+
+  if (!userId) {
+    return res
+    .status(401)
+    .json({ data: {}, message: `Missing userId`, status: false });
+  }
+  
   const facebookUser = new FacebookCredential({
     name,
     accessToken,
     userId,
     email,
     image,
+    fbEmail
   });
 
   try {
@@ -43,14 +84,6 @@ const saveFaceebookCredentials = async (req, res, next) => {
         status: false,
       });
   }
-
-  res
-    .status(201)
-    .json({
-      data: { name: facebookUser.name, email: facebookUser.email },
-      status: true,
-      message: "Save all data",
-    });
 };
 
 exports.saveFaceebookCredentials = saveFaceebookCredentials;

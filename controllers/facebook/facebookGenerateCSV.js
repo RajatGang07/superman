@@ -19,9 +19,7 @@ const getAdAccountList = async (accessToken) => {
     const response = await axios.get(appAccessTokenUrl);
     return response;
   } catch (error) {
-    return res
-    .status(500)
-    .json({ data: {}, message: err, status: false });
+    return res.status(500).json({ data: {}, message: err, status: false });
   }
 };
 
@@ -40,23 +38,21 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
   const { userId } = req.body;
   if (!userId) {
     return res
-    .status(401)
-    .json({ data: {}, message: `Missing userId`, status: false });
+      .status(401)
+      .json({ data: {}, message: `Missing userId`, status: false });
   }
   let existingUser;
 
   try {
     existingUser = await FacebookCredential.findOne({ userId: userId });
   } catch (err) {
-    return res
-    .status(500)
-    .json({ data: {}, message: err, status: false });
+    return res.status(500).json({ data: {}, message: err, status: false });
   }
 
   if (!existingUser) {
     return res
-    .status(500)
-    .json({ data: {}, message: "Wrong user", status: false });
+      .status(500)
+      .json({ data: {}, message: "Wrong user", status: false });
   }
 
   let accountListOfLoggedInUser;
@@ -65,13 +61,11 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
       existingUser?.accessToken
     );
   } catch (err) {
-    return res
-    .status(500)
-    .json({ data: {}, message: err, status: false });
+    return res.status(500).json({ data: {}, message: err, status: false });
   }
 
   let totalResponse = [];
-  let flattenedData = []
+  let flattenedData = [];
   try {
     for (let index = 0; index <= 1; index++) {
       //accountListOfLoggedInUser?.data?.data.length;
@@ -87,7 +81,9 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
             console.log("adId", adId);
             const insightURL = `https://graph.facebook.com/v18.0/${adId}/insights?fields=${INSIGHT_FIELDS.join(
               ","
-            )}&date_preset=last_30d&time_increment=7&access_token=${existingUser?.accessToken}`;
+            )}&date_preset=last_30d&time_increment=7&access_token=${
+              existingUser?.accessToken
+            }`;
             const insightResponse = await axios.get(insightURL);
             console.log("insightURL", insightURL);
             console.log(
@@ -108,10 +104,11 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
             console.log("fetchAdSetsURL", fetchAdSets);
 
             const adSetId = insightResponse?.data?.data?.[index]?.adset_id;
-            const campaignId =
-              insightResponse?.data?.data?.[index]?.campaign_id;
-            console.log("adSetId", adSetId);
-            console.log("campaignId", campaignId);
+            if (!adSetId) {
+              return res
+                .status(500)
+                .json({ data: {}, message: `Missing adSetId`, status: false });
+            }
             const adSetsURL = `https://graph.facebook.com/v18.0/${adSetId}?fields=${ADSET_LEVEL}&date_preset=last_30d&access_token=${existingUser?.accessToken}`;
             const adSetResponse = await axios.get(adSetsURL);
             console.log("adSetsURL", adSetsURL);
@@ -157,51 +154,53 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
                     adSetsResponseIndex < adSetsResponse?.data?.data.length > 0;
                     adSetsResponseIndex++
                   ) {
-
                     if (
                       adSetsResponse?.data?.data[adSetsResponseIndex].id ===
                       insightResponse?.data?.data[insightResponseIndex].adset_id
                     ) {
-                    for (
-                      let adSetInsightResponseIndex = 0;
-                      adSetInsightResponseIndex <
-                      adSetInsightResponse?.data?.data.length >
-                      0;
-                      adSetInsightResponseIndex++
-                    ) {
-                      // newObj={...newObj,...adSetInsightResponse?.data?.data[adSetInsightResponseIndex] }
                       for (
-                        let adCreativesResponseIndex = 0;
-                        adCreativesResponseIndex <
-                        adCreativesResponse?.data?.data.length >
+                        let adSetInsightResponseIndex = 0;
+                        adSetInsightResponseIndex <
+                        adSetInsightResponse?.data?.data.length >
                         0;
-                        adCreativesResponseIndex++
+                        adSetInsightResponseIndex++
                       ) {
-                        // newObj={...newObj,...adCreativesResponse?.data?.data[adCreativesResponseIndex], adCreativeId: adCreativesResponse?.data?.data[adCreativesResponseIndex].id }
-                        newObj = {
-                          ...campaignResponse?.data?.data[
-                            campaignResponseIndex
-                          ],
-                          ...insightResponse?.data?.data[insightResponseIndex],
-                          ...accountResponse?.data,
-                          ...adSetsResponse?.data?.data[adSetsResponseIndex],
-                          adSetId:
-                            adSetsResponse?.data?.data[adSetsResponseIndex].id,
-                          ...adSetInsightResponse?.data?.data[
-                            adSetInsightResponseIndex
-                          ],
-                          ...adCreativesResponse?.data?.data[
-                            adCreativesResponseIndex
-                          ],
-                          adCreativeId:
-                            adCreativesResponse?.data?.data[
+                        // newObj={...newObj,...adSetInsightResponse?.data?.data[adSetInsightResponseIndex] }
+                        for (
+                          let adCreativesResponseIndex = 0;
+                          adCreativesResponseIndex <
+                          adCreativesResponse?.data?.data.length >
+                          0;
+                          adCreativesResponseIndex++
+                        ) {
+                          // newObj={...newObj,...adCreativesResponse?.data?.data[adCreativesResponseIndex], adCreativeId: adCreativesResponse?.data?.data[adCreativesResponseIndex].id }
+                          newObj = {
+                            ...campaignResponse?.data?.data[
+                              campaignResponseIndex
+                            ],
+                            ...insightResponse?.data?.data[
+                              insightResponseIndex
+                            ],
+                            ...accountResponse?.data,
+                            ...adSetsResponse?.data?.data[adSetsResponseIndex],
+                            adSetId:
+                              adSetsResponse?.data?.data[adSetsResponseIndex]
+                                .id,
+                            ...adSetInsightResponse?.data?.data[
+                              adSetInsightResponseIndex
+                            ],
+                            ...adCreativesResponse?.data?.data[
                               adCreativesResponseIndex
-                            ].id,
-                        };
-                        updatedAdData.push(newObj);
+                            ],
+                            adCreativeId:
+                              adCreativesResponse?.data?.data[
+                                adCreativesResponseIndex
+                              ].id,
+                          };
+                          updatedAdData.push(newObj);
+                        }
                       }
                     }
-                  }
                   }
                 }
                 // newObj = {...campaignResponse?.data?.data[campaignResponseIndex], ...insightResponse?.data?.data[insightResponseIndex], ...accountResponse?.data }
@@ -210,7 +209,15 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
 
             totalResponse = [...totalResponse, ...updatedAdData];
           }
+        } else {
+          return res
+            .status(500)
+            .json({ data: {}, message: `Missing ads response ${adsURL}`, status: false });
         }
+      } else {
+        return res
+          .status(500)
+          .json({ data: {}, message: `Missing adAccountId`, status: false });
       }
     }
 
@@ -252,9 +259,7 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
       .then(() => console.log("CSV file written successfully"))
       .catch((error) => console.error("Error writing CSV file:", error));
   } catch (err) {
-    return res
-    .status(500)
-    .json({ data: {}, message: err, status: false });
+    return res.status(500).json({ data: {}, message: err, status: false });
   }
 
   return res.status(201).json({ response: flattenedData });
