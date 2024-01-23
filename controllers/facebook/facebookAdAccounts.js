@@ -13,27 +13,33 @@ const getAdAccountList = async (accessToken) => {
 };
 
 const fetchAdAcounts = async (req, res, next) => {
-  const { userId } = req.body;
+  const { fbEmail, userId } = req.body;
+  if (!fbEmail) {
+    return res
+    .status(401)
+    .json({ data: [], message: `Missing facebook email`, status: false });
+  }
+  
   if (!userId) {
     return res
     .status(401)
-    .json({ data: {}, message: `Missing userId`, status: false });
+    .json({ data: [], message: `Missing userId`, status: false });
   }
-  
+
   let existingUser;
 
   try {
-    existingUser = await FacebookCredential.findOne({ userId: userId });
+    existingUser = await FacebookCredential.findOne({ fbEmail: fbEmail });
   } catch (err) {
     return res
     .status(500)
-    .json({ data: {}, message: err, status: false });
+    .json({ data: [], message: "No accounts found", status: false });
   }
 
   if (!existingUser) {
     return res
     .status(500)
-    .json({ data: {}, message: "Wrong user", status: false });
+    .json({ data: [], message: "No accounts found", status: false });
   }
 
   let response;
@@ -42,18 +48,18 @@ const fetchAdAcounts = async (req, res, next) => {
   } catch (err) {
     return res
     .status(500)
-    .json({ data: {}, message: err, status: false });
+       .json({ data: [], message: "No accounts found", status: false });
   }
 
   try {
     await FacebookCredential.updateOne(
-      { userId: userId },
+      { fbEmail: fbEmail },
       { accountList: response?.data?.data }
     );
   } catch (err) {
     return res
     .status(500)
-    .json({ data: {}, message: err, status: false });
+       .json({ data: [], message: "No accounts found", status: false });
   }
 
   return res.status(201).json({ data: response?.data, message: 'Fetch ad Accounts', status:true });
@@ -63,6 +69,7 @@ const fetchAdAcounts = async (req, res, next) => {
 const getAdCampaignAccountList = async (accessToken, actId, field) => {
   try {
     const appAccessTokenUrl = `https://graph.facebook.com/v18.0/${actId}/campaigns?fields=${field}&access_token=${accessToken}`;
+    console.log('appAccessTokenUrl', appAccessTokenUrl)
     const response = await axios.get(appAccessTokenUrl);
     return response;
   } catch (error) {
