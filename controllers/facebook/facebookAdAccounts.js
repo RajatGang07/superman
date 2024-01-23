@@ -79,10 +79,17 @@ const getAdCampaignAccountList = async (accessToken, actId, field) => {
 };
 
 const fetchAdCampaignAcounts = async (req, res, next) => {
-  const { field, actId, userId } = req.body;
+  const { field, actId, userId, fbEmail } = req.body;
+
+  if (!fbEmail) {
+    return res
+    .status(401)
+    .json({ data: [], message: `Missing facebook email`, status: false });
+  }
+  
   let existingUser;
   try {
-    existingUser = await FacebookCredential.findOne({ userId: userId });
+    existingUser = await FacebookCredential.findOne({ fbEmail: fbEmail });
   } catch (err) {
     return res
     .status(500)
