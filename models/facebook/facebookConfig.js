@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const facebookConfig = new Schema({
   configName: { type: String, required: true, unique: true },
-  account: { type: Object, required: true },
+  account: { type: [], required: true },
   campaign: { type: [], required: false, unique: false },
   selectedAccountLevel: { type: [], required: false, unique: false },
   selectedAdInsights: { type: [], required: false, unique: false },

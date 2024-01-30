@@ -69,7 +69,6 @@ const fetchAdAcounts = async (req, res, next) => {
 const getAdCampaignAccountList = async (accessToken, actId, field) => {
   try {
     const appAccessTokenUrl = `https://graph.facebook.com/v18.0/${actId}/campaigns?fields=${field}&access_token=${accessToken}`;
-    console.log('appAccessTokenUrl', appAccessTokenUrl)
     const response = await axios.get(appAccessTokenUrl);
     return response;
   } catch (error) {
@@ -86,7 +85,7 @@ const fetchAdCampaignAcounts = async (req, res, next) => {
     .status(401)
     .json({ data: [], message: `Missing facebook email`, status: false });
   }
-  
+
   let existingUser;
   try {
     existingUser = await FacebookCredential.findOne({ fbEmail: fbEmail });

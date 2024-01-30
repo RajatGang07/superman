@@ -19,7 +19,7 @@ const saveFaceebookCredentials = async (req, res, next) => {
   let existingUser;
 
   try {
-    existingUser = await FacebookCredential.findOne({ fbEmail: fbEmail });
+    existingUser = await FacebookCredential.findOne({ fbEmail: fbEmail, userId: userId });
   } catch (err) {
     return res
     .status(500)
@@ -29,7 +29,7 @@ const saveFaceebookCredentials = async (req, res, next) => {
   if (existingUser) {
     return res
     .status(500)
-    .json({ data: {}, message: `${fbEmail} already exists`, status: false });
+    .json({ data: {}, message: `${fbEmail} and ${userId} already exists`, status: false });
   }
 
   if (!name) {

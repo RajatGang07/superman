@@ -68,14 +68,16 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
           .status(500)
           .json({ data: {}, message: `Wrong user`, status: false });
       }
-      const adAccountId = facebookConfigs[i]?.account?.value;
+      for(let accountCounter = 0;accountCounter< facebookConfigs[i]?.account.length; accountCounter++){
+      const adAccountId = facebookConfigs[i]?.account[accountCounter]?.value;
       if (adAccountId) {
         const adsURL = `https://graph.facebook.com/v18.0/${adAccountId}/ads?access_token=${existingUser?.accessToken}`;
         const adsResponse = await axios.get(adsURL);
 
         if (adsResponse?.data?.data.length > 0) {
+          console.log('adsResponse?.data?.data', adsResponse?.data?.data)
           //adsIndex < adsResponse?.data?.data.length;
-          for (let adsIndex = 0; adsIndex < 1; adsIndex++) {
+          for (let adsIndex = 0; adsIndex < adsResponse?.data?.data.length; adsIndex++) {
             const adId = adsResponse?.data?.data[i]?.id;
             const insightURL = `https://graph.facebook.com/v18.0/${adId}/insights?fields=${INSIGHT_FIELDS.join(
               ","
@@ -212,6 +214,7 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
           .status(500)
           .json({ data: {}, message: `Missing adAccountId`, status: false });
       }
+    }
       console.log("totalResponse", totalResponse);
       flattenedData = totalResponse.flatMap((item) => {
         const result = {};
@@ -395,13 +398,20 @@ const fetchFacebookDataForSingleConfig = async (req, res, next) => {
         const error = new HttpError("Wrong user", 403);
         return next(error);
       }
-      const adAccountId = facebookConfigs[i]?.account?.value;
+
+      for(let accountCounter = 0;accountCounter< facebookConfigs[i]?.account.length; accountCounter++){
+
+      
+      const adAccountId = facebookConfigs[i]?.account[accountCounter]?.value;
+
+      console.log('adAccountId', adAccountId, facebookConfigs[i]?.account)
       if (adAccountId) {
         const adsURL = `https://graph.facebook.com/v18.0/${adAccountId}/ads?access_token=${existingUser?.accessToken}`;
         const adsResponse = await axios.get(adsURL);
 
         if (adsResponse?.data?.data.length > 0) {
           //adsIndex < adsResponse?.data?.data.length;
+          console.log('adsResponse?.data?.data', adsResponse?.data?.data)
           for (let adsIndex = 0; adsIndex < 1; adsIndex++) {
             const adId = adsResponse?.data?.data[i]?.id;
             const insightURL = `https://graph.facebook.com/v18.0/${adId}/insights?fields=${INSIGHT_FIELDS.join(
@@ -536,6 +546,7 @@ const fetchFacebookDataForSingleConfig = async (req, res, next) => {
           }
         }
       }
+    }
       console.log("totalResponse", totalResponse);
       flattenedData = totalResponse.flatMap((item) => {
         const result = {};

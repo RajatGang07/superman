@@ -36,7 +36,7 @@ const fetchFacebookDataForSingleConfigPreview = async (req, res, next) => {
   let totalResponse = [];
   let flattenedData = [];
   try {
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < account.length; i++) {
       console.log("I am calling", cron);
       // cron.schedule('* * * * *', async () => {
       const date_Preset = datePreset ? datePreset.label : "last_30d";
@@ -64,9 +64,10 @@ const fetchFacebookDataForSingleConfigPreview = async (req, res, next) => {
           .status(500)
           .json({ data: {}, message: `Wrong user`, status: false });
       }
-      const adAccountId = account?.value;
+      for(let accountCounter = 0;accountCounter< facebookConfigs[i]?.account.length; accountCounter++){
+      const adAccountId = account?.[accountCounter]?.value;
       console.log('adAccountId',adAccountId)
-
+  
       if (adAccountId) {
         const adsURL = `https://graph.facebook.com/v18.0/${adAccountId}/ads?access_token=${existingUser?.accessToken}`;
         console.log('adsURL', adsURL)
@@ -204,6 +205,7 @@ const fetchFacebookDataForSingleConfigPreview = async (req, res, next) => {
         .status(500)
         .json({ data: {}, message: `Missing adAccountId`, status: false });
       }
+    }
     }
     console.log("totalResponse", totalResponse);
     flattenedData = totalResponse.flatMap((item) => {
