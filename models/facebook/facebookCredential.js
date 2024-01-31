@@ -9,7 +9,7 @@ const facebookSchema = new Schema({
   userId: { type: String, required: true, unique: false },
   image: { type: String, required: false, unique: false },
   accountList: { type: [], required: false, unique: false },
-  fbEmail: { type: String, required: true, unique: true },
+  fbEmail: { type: String, required: true, unique: false },
 
 });
 
