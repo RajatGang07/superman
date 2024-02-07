@@ -67,9 +67,11 @@ const fetchFacebookDataForAdvertisement = async (req, res, next) => {
   let totalResponse = [];
   let flattenedData = [];
   try {
-    for (let index = 0; index <= accountListOfLoggedInUser?.data?.data.length; index++) {
+    for (let index = 0; index < accountListOfLoggedInUser?.data?.data.length; index++) {
       //accountListOfLoggedInUser?.data?.data.length;
       const adAccountId = accountListOfLoggedInUser?.data?.data[index]?.id;
+
+      console.log('accountListOfLoggedInUser', accountListOfLoggedInUser?.data?.data)
       if (adAccountId) {
         const adsURL = `https://graph.facebook.com/v18.0/${adAccountId}/ads?access_token=${existingUser?.accessToken}`;
         console.log("adsURL", adsURL);
